@@ -22,7 +22,7 @@ LAYER_DESCRIPTORS = {
     'EuclideanLoss': shape_scalar,
     'Eltwise': shape_identity,
     'Exp': shape_identity,
-    'Flatten': shape_not_implemented,
+    'Flatten': flatten_shape,
     'HDF5Data': shape_data,
     'HDF5Output': shape_identity,
     'HingeLoss': shape_scalar,
@@ -38,7 +38,9 @@ LAYER_DESCRIPTORS = {
     'Normalize': shape_identity,
     'Pooling': shape_pool,
     'Power': shape_identity,
+    'PReLU': shape_identity,
     'ReLU': shape_identity,
+    'Reshape': reshape_shape,
     'Scale': shape_identity,
     'Sigmoid': shape_identity,
     'SigmoidCrossEntropyLoss': shape_scalar,
@@ -49,8 +51,7 @@ LAYER_DESCRIPTORS = {
     'Slice': shape_not_implemented,
     'TanH': shape_identity,
     'WindowData': shape_not_implemented,
-    'Threshold': shape_identity,
-    'PReLU': shape_identity,
+    'Threshold': shape_identity
 }
 
 LAYER_TYPES = LAYER_DESCRIPTORS.keys()

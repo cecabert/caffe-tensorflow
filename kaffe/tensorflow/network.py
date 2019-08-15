@@ -255,11 +255,27 @@ class Network(object):
         return tf.nn.dropout(input, keep, name=name)
         
     @layer
-    def l2_normalize(self, input):
+    def reshape(self,input,b,x,y,c,name,transpose = False) :
+        if transpose :
+            input = tf.reshape(input,[-1,c,x,y])
+            return tf.transpose(input,(0,2,3,1))
+
+        return tf.reshape(input,[-1,x,y,c],name = name)
+
+    @layer
+    def flatten(self,input,name):
+        input = tf.transpose(input,(0,3,1,2))
+        dim = 1
+        for d in input.get_shape()[1:].as_list():
+                dim *= d
+        return tf.reshape(input,[-1,dim],name = name)
+        
+    @layer
+    def l2_normalize(self, input, name):
         # NOTE: Currently, only inference is supported
         with tf.variable_scope(name) as scope:
           shp = input.get_shape().as_list()
           outputs = tf.nn.l2_normalize(x=input, axis=-1)
-          alpha = self.make_var('alpha', shape=[-1:])
+          alpha = self.make_var('alpha', shape=shp[-1:])
           outputs = tf.multiply(outputs, alpha)
           return outputs

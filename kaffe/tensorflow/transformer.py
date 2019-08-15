@@ -142,7 +142,10 @@ class TensorFlowMapper(NodeMapper):
         return TensorFlowNode('lrn', int(params.local_size / 2), alpha, params.beta)
 
     def map_concat(self, node):
-        axis = (2, 3, 1, 0)[node.parameters.axis]
+        if node.parents[0].kind == 'Flatten':
+            axis = node.parameters.axis
+        else :    
+            axis = (2, 3, 1, 0)[node.parameters.axis]
         return TensorFlowNode('concat', axis)
 
     def map_dropout(self, node):
@@ -161,9 +164,27 @@ class TensorFlowMapper(NodeMapper):
         except KeyError:
             raise KaffeError('Unknown elementwise operation: {}'.format(op_code))
             
+    def map_reshape(self,node) :
+        shape = node.output_shape
+        new_shape = [0]*4
+        new_shape[0] = shape[0]
+        new_shape[1] = shape[2]
+        new_shape[2] = shape[3]
+        new_shape[3] = shape[1]
+        parent_shape = node.get_only_parent().output_shape
+
+        ## we need to transpose again if a fc layer is reshaped to conv
+        kwargs = {'transpose' : False}
+        if parent_shape.height == 1 and parent_shape.width == 1 :
+            kwargs['transpose'] = True
+        return TensorFlowNode('reshape',new_shape[0],new_shape[1],new_shape[2],new_shape[3],**kwargs)
+
+    def map_flatten(self,node) :
+        return TensorFlowNode('flatten')
+            
     def map_normalize(self, node):
         return TensorFlowNode('l2_normalize')
-
+        
     def commit(self, chains):
         return chains
 
