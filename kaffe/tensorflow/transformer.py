@@ -160,6 +160,9 @@ class TensorFlowMapper(NodeMapper):
             return TensorFlowNode(operations[op_code])
         except KeyError:
             raise KaffeError('Unknown elementwise operation: {}'.format(op_code))
+            
+    def map_normalize(self, node):
+        return TensorFlowNode('l2_normalize')
 
     def commit(self, chains):
         return chains

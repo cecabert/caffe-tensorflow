@@ -35,6 +35,7 @@ LAYER_DESCRIPTORS = {
     'MemoryData': shape_mem_data,
     'MultinomialLogisticLoss': shape_scalar,
     'MVN': shape_not_implemented,
+    'Normalize': shape_identity,
     'Pooling': shape_pool,
     'Power': shape_identity,
     'ReLU': shape_identity,

@@ -253,3 +253,13 @@ class Network(object):
     def dropout(self, input, keep_prob, name):
         keep = 1 - self.use_dropout + (self.use_dropout * keep_prob)
         return tf.nn.dropout(input, keep, name=name)
+        
+    @layer
+    def l2_normalize(self, input):
+        # NOTE: Currently, only inference is supported
+        with tf.variable_scope(name) as scope:
+          shp = input.get_shape().as_list()
+          outputs = tf.nn.l2_normalize(x=input, axis=-1)
+          alpha = self.make_var('alpha', shape=[-1:])
+          outputs = tf.multiply(outputs, alpha)
+          return outputs
